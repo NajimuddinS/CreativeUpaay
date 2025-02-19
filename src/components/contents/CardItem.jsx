@@ -24,13 +24,12 @@ const CardItem = ({ todo, index }) => {
           >
             <header className="flex justify-between items-center mb-1">
               <span
-                className={`text-xs font-medium capitalize py-1 px-[6px] rounded-[4px] ${
-                  todo.status === "completed"
-                    ? "bg-[#83C29D] bg-opacity-20 text-[#68B266]"
+                className={`text-xs font-medium capitalize py-1 px-[6px] rounded-[4px] ${todo.status === "completed"
+                    ? "bg-[#d1fae2] bg-opacity-20 text-[#68B266]"
                     : todo.priority === "low"
-                    ? "bg-[#DFA874] bg-opacity-20 text-[#D58D49]"
-                    : "bg-[#D8727D] bg-opacity-20 text-[#D8727D]"
-                }`}
+                      ? "bg-[#ffecdb] bg-opacity-20 text-[#D58D49]"
+                      : "bg-[#ffd4d8] bg-opacity-20 text-[#D8727D]"
+                  }`}
               >
                 {todo.status === "completed" ? todo.status : todo.priority}
               </span>
@@ -50,7 +49,7 @@ const CardItem = ({ todo, index }) => {
                       src={pictures[picture]}
                       alt={picture}
                       key={picture}
-                      className="w-full md:w-auto max-w-full md:max-w-none mb-2 md:mb-0 mr-2"
+                      className="w-full md:w-auto m-2 md:mb-0 mr-2"
                     />
                   ))}
                 </div>
