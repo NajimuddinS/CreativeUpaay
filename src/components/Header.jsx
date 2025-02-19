@@ -1,12 +1,9 @@
 import EditIcon from "../assets/edit.svg";
 import LinkIcon from "../assets/link.svg";
 import CreateIcon from "../assets/create.svg";
-import FilterIcon from "../assets/filter.svg";
-import DateIcon from "../assets/date.svg";
 import GridIcon from "../assets/grid.svg";
 import PauseIcon from "../assets/pause.svg";
 import ShareIcon from "../assets/share.svg";
-import ArrowDownIcon from "../assets/arrowDown.svg";
 import Users from "./Users";
 
 const Header = () => {
