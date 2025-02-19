@@ -1,4 +1,5 @@
-import { Draggable } from "react-beautiful-dnd";
+// import { Draggable } from "react-beautiful-dnd";
+import { Draggable } from "@hello-pangea/dnd";
 import PropTypes from "prop-types";
 import Member from "./Member";
 import Moodboard1 from "../../assets/Moodboard-1.png";

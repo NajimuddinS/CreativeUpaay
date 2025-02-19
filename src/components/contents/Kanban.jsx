@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext } from "@hello-pangea/dnd";
 import { boardData } from "./KanbanData";
 import CardList from "./CardList";
 
