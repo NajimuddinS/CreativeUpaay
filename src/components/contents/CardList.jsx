@@ -1,4 +1,3 @@
-// import { Droppable } from "react-beautiful-dnd";
 import { Droppable } from "@hello-pangea/dnd";
 import PropTypes from "prop-types";
 import CreateIcon from "../../assets/create.svg";

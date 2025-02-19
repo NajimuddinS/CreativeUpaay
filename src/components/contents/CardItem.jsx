@@ -1,4 +1,3 @@
-// import { Draggable } from "react-beautiful-dnd";
 import { Draggable } from "@hello-pangea/dnd";
 import PropTypes from "prop-types";
 import Member from "./Member";

@@ -31,17 +31,25 @@ const Header = () => {
 
       <div className="flex flex-col md:flex-row items-center justify-between mt-10 gap-5 md:gap-0 lg:gap-0">
         <div className="flex items-center gap-3">
-          <div className="flex items-center border w-[122px] h-[40px] rounded-md py-4 pr-5 pl-3 border-solid border-gray-400">
-            <img src={FilterIcon} alt="FilterIcon" className="mr-3" />
-            <span className="text-base mr-4">Filter</span>
-            <img src={ArrowDownIcon} alt="ArrowDownIcon" />
-          </div>
-          <div className="flex items-center border w-[125px] h-[40px] rounded-md py-4 pr-5 pl-3 border-solid border-gray-400">
-            <img src={DateIcon} alt="DateIcon" className="mr-3" />
-            <span className="text-base mr-4">Today</span>
-            <img src={ArrowDownIcon} alt="ArrowDownIcon" />
+          <div className="flex items-center gap-3">
+            <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <option value="" selected >Filter</option>
+              <option value="US">United States</option>
+              <option value="CA">Canada</option>
+              <option value="FR">France</option>
+              <option value="DE">Germany</option>
+            </select>
+
+            <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <option value="" selected >Today</option>
+              <option value="US">United States</option>
+              <option value="CA">Canada</option>
+              <option value="FR">France</option>
+              <option value="DE">Germany</option>
+            </select>
           </div>
         </div>
+
 
         <div className="flex items-center justify-center">
           <div className="flex items-center border w-[97px] h-[40px] rounded-md py-4 pl-3 pr-3 border-solid border-gray-400">
