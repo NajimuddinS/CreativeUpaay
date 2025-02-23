@@ -8,7 +8,7 @@ export const boardData = [
         title: "Brainstorming",
         image: [],
         description:
-          "Brainstorming brings team members' diverse experience into play. ",
+          "Brainstorming brings team members' diverse experience into play.",
         priority: "low",
         comments: 12,
         files: 0,

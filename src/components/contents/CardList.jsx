@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import PropTypes from "prop-types";
 import CreateIcon from "../../assets/create.svg";
 import CardItem from "./CardItem";
+import AddTaskModal from "./AddTaskModal";
 
-const CardList = ({ todoList, type, id }) => {
+const CardList = ({ todoList, type, id, onTaskAdded }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const borderColor =
     type === "not-started"
       ? "border-b-[#5030E5]"
@@ -17,6 +21,14 @@ const CardList = ({ todoList, type, id }) => {
       : type === "started"
       ? "bg-[#FFA500]"
       : "bg-[#76A5EA]";
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleTaskCreated = (newTask) => {
+    onTaskAdded(newTask);
+  };
 
   return (
     <div className="relative bg-[#F5F5F5] rounded-2xl p-5 flex flex-col gap-5">
@@ -35,9 +47,12 @@ const CardList = ({ todoList, type, id }) => {
           {todoList.length}
         </span>
         {type === "not-started" && (
-          <span className="absolute top-[22px] right-[22px]">
+          <button 
+            className="absolute top-[22px] right-[22px] cursor-pointer"
+            onClick={() => setIsModalOpen(true)}
+          >
             <img src={CreateIcon} alt="CreateIcon" />
-          </span>
+          </button>
         )}
       </header>
       <Droppable droppableId={id}>
@@ -59,6 +74,12 @@ const CardList = ({ todoList, type, id }) => {
           </div>
         )}
       </Droppable>
+
+      <AddTaskModal 
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onTaskAdded={handleTaskCreated}
+      />
     </div>
   );
 };
@@ -66,7 +87,7 @@ const CardList = ({ todoList, type, id }) => {
 CardList.propTypes = {
   todoList: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       title: PropTypes.string.isRequired,
       description: PropTypes.string,
       image: PropTypes.arrayOf(PropTypes.string),
@@ -79,6 +100,7 @@ CardList.propTypes = {
   ).isRequired,
   type: PropTypes.oneOf(["not-started", "started", "done"]).isRequired,
   id: PropTypes.string.isRequired,
+  onTaskAdded: PropTypes.func.isRequired,
 };
 
 export default CardList;

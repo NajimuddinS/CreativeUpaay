@@ -1,3 +1,4 @@
+import { useState } from "react";
 import EditIcon from "../assets/edit.svg";
 import LinkIcon from "../assets/link.svg";
 import CreateIcon from "../assets/create.svg";
@@ -6,7 +7,7 @@ import PauseIcon from "../assets/pause.svg";
 import ShareIcon from "../assets/share.svg";
 import Users from "./Users";
 
-const Header = () => {
+const Header = ({ onFilterChange, onDateChange }) => {
   return (
     <>
       <div className="w-full flex flex-col gap-4 lg:flex-row lg:justify-between items-center lg:gap-0 mt-10">
@@ -29,17 +30,23 @@ const Header = () => {
       <div className="flex flex-col md:flex-row items-center justify-between mt-10 gap-5 md:gap-0 lg:gap-0">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-3">
-            <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value="" selected >Filter</option>
-              <option value="US">Low</option>
-              <option value="CA">High</option>
-              <option value="FR">Completed</option>
+            <select 
+              id="priority-filter" 
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              onChange={(e) => onFilterChange(e.target.value)}
+            >
+              <option value="">All Priorities</option>
+              <option value="low">Low Priority</option>
+              <option value="high">High Priority</option>
+              <option value="completed">Completed</option>
             </select>
-
-            <input datepicker id="default-datepicker" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date" />
+            <input 
+              type="date" 
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+              onChange={(e) => onDateChange(e.target.value)}
+            />
           </div>
         </div>
-
 
         <div className="flex items-center justify-center">
           <div className="flex items-center border w-[97px] h-[40px] rounded-md py-4 pl-3 pr-3 border-solid border-gray-400">
