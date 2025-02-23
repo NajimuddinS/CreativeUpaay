@@ -16,7 +16,7 @@ const Kanban = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://creative-backend-7c3k.onrender.com/tasks/');
+        const response = await fetch('https://creativedb.onrender.com/tasks/');
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
@@ -116,7 +116,7 @@ const Kanban = () => {
 
     try {
       // Update the status in the backend
-      const response = await fetch(`https://creative-backend-7c3k.onrender.com/tasks/${draggableId}`, {
+      const response = await fetch(`https://creativedb.onrender.com/tasks/${draggableId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
