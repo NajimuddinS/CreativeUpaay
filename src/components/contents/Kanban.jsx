@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { DragDropContext } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import CardList from "./CardList";
 import Header from "../Header";
 
@@ -16,16 +16,18 @@ const Kanban = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://creativedb.onrender.com/tasks/');
+        const response = await fetch('https://creative-backend-7c3k.onrender.com/tasks/');
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
         const data = await response.json();
+        
         // Transform _id to id for compatibility
         const transformedData = data.map(todo => ({
           ...todo,
           id: todo._id
         }));
+
         setAllTodos(transformedData);
         applyFilters(transformedData, priorityFilter, dateFilter);
         setIsLoading(false);
@@ -39,8 +41,9 @@ const Kanban = () => {
   }, []);
 
   const handleTaskAdded = (newTask) => {
-    setAllTodos(prev => [...prev, { ...newTask, id: newTask._id }]);
-    applyFilters([...allTodos, { ...newTask, id: newTask._id }], priorityFilter, dateFilter);
+    const updatedTodos = [...allTodos, { ...newTask, id: newTask._id }];
+    setAllTodos(updatedTodos);
+    applyFilters(updatedTodos, priorityFilter, dateFilter);
   };
 
   const applyFilters = (todos, priority, date) => {
@@ -78,89 +81,47 @@ const Kanban = () => {
     applyFilters(allTodos, priorityFilter, date);
   };
 
-  const findTodoById = (id, array) => {
-    return array.find((todo) => todo.id === id);
-  };
-
-  const removeTodoById = (id, array) => {
-    return array.filter((todo) => todo.id !== id);
-  };
-
-  const onDragEnd = async (result) => {
-    const { destination, source, draggableId } = result;
-
+  const onDragEnd = (result) => {
+    const { source, destination, draggableId } = result;
     if (!destination) return;
 
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
+    // If dropped in the same position, do nothing
+    if (source.droppableId === destination.droppableId && source.index === destination.index) {
       return;
     }
 
-    let updatedNotStartedTodos = [...notStartedTodos];
-    let updatedStartedTodos = [...startedTodos];
-    let updatedCompletedTodos = [...completedTodos];
+    const sourceList = 
+      source.droppableId === "1" ? notStartedTodos :
+      source.droppableId === "2" ? startedTodos :
+      completedTodos;
 
-    const todo = findTodoById(draggableId, [
-      ...notStartedTodos,
-      ...startedTodos,
-      ...completedTodos,
-    ]);
+    const destinationList =
+      destination.droppableId === "1" ? notStartedTodos :
+      destination.droppableId === "2" ? startedTodos :
+      completedTodos;
 
-    if (!todo) return;
+    const movedTask = sourceList[source.index];
 
-    const newStatus = 
+    // Remove from source list
+    const newSourceList = [...sourceList];
+    newSourceList.splice(source.index, 1);
+
+    // Add to destination list at the new position
+    const newDestinationList = [...destinationList];
+    movedTask.status = 
       destination.droppableId === "1" ? "not started" :
       destination.droppableId === "2" ? "in progress" : "completed";
 
-    try {
-      // Update the status in the backend
-      const response = await fetch(`https://creativedb.onrender.com/tasks/${draggableId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
+    newDestinationList.splice(destination.index, 0, movedTask);
 
-      if (!response.ok) {
-        throw new Error('Failed to update task status');
-      }
+    // Update the state based on the column
+    if (source.droppableId === "1") setNotStartedTodos(newSourceList);
+    else if (source.droppableId === "2") setStartedTodos(newSourceList);
+    else setCompletedTodos(newSourceList);
 
-      // Update local state if backend update was successful
-      if (source.droppableId === "1") {
-        updatedNotStartedTodos = removeTodoById(draggableId, updatedNotStartedTodos);
-      } else if (source.droppableId === "2") {
-        updatedStartedTodos = removeTodoById(draggableId, updatedStartedTodos);
-      } else {
-        updatedCompletedTodos = removeTodoById(draggableId, updatedCompletedTodos);
-      }
-
-      const updatedTodo = { ...todo, status: newStatus };
-
-      if (destination.droppableId === "1") {
-        updatedNotStartedTodos.splice(destination.index, 0, updatedTodo);
-      } else if (destination.droppableId === "2") {
-        updatedStartedTodos.splice(destination.index, 0, updatedTodo);
-      } else {
-        updatedCompletedTodos.splice(destination.index, 0, updatedTodo);
-      }
-
-      setNotStartedTodos(updatedNotStartedTodos);
-      setStartedTodos(updatedStartedTodos);
-      setCompletedTodos(updatedCompletedTodos);
-
-      const updatedAllTodos = allTodos.map(t => 
-        t.id === todo.id ? { ...t, status: newStatus } : t
-      );
-      setAllTodos(updatedAllTodos);
-
-    } catch (error) {
-      console.error('Error updating task status:', error);
-      // Revert to original state if update fails
-      applyFilters(allTodos, priorityFilter, dateFilter);
-    }
+    if (destination.droppableId === "1") setNotStartedTodos(newDestinationList);
+    else if (destination.droppableId === "2") setStartedTodos(newDestinationList);
+    else setCompletedTodos(newDestinationList);
   };
 
   if (isLoading) {
@@ -184,9 +145,32 @@ const Kanban = () => {
       <Header onFilterChange={handleFilterChange} onDateChange={handleDateChange} />
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="mt-10 grid grid-flow-row auto-cols-fr lg:grid-flow-col gap-[15px]">
-        <CardList todoList={notStartedTodos} type="not-started" id="1" onTaskAdded={handleTaskAdded} />
-          <CardList todoList={startedTodos} type="started" id="2" />
-          <CardList todoList={completedTodos} type="completed" id="3" />
+          <Droppable droppableId="1">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <CardList todoList={notStartedTodos} type="not-started" id="1" onTaskAdded={handleTaskAdded} />
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+
+          <Droppable droppableId="2">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <CardList todoList={startedTodos} type="started" id="2" />
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+
+          <Droppable droppableId="3">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <CardList todoList={completedTodos} type="completed" id="3" />
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
         </div>
       </DragDropContext>
     </>
