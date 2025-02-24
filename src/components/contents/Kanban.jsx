@@ -16,13 +16,12 @@ const Kanban = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://creative-backend-7c3k.onrender.com/tasks/');
+        const response = await fetch('https://creativedb.onrender.com/tasks/');
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
         const data = await response.json();
         
-        // Transform _id to id for compatibility
         const transformedData = data.map(todo => ({
           ...todo,
           id: todo._id
@@ -85,7 +84,6 @@ const Kanban = () => {
     const { source, destination, draggableId } = result;
     if (!destination) return;
 
-    // If dropped in the same position, do nothing
     if (source.droppableId === destination.droppableId && source.index === destination.index) {
       return;
     }
@@ -102,11 +100,9 @@ const Kanban = () => {
 
     const movedTask = sourceList[source.index];
 
-    // Remove from source list
     const newSourceList = [...sourceList];
     newSourceList.splice(source.index, 1);
 
-    // Add to destination list at the new position
     const newDestinationList = [...destinationList];
     movedTask.status = 
       destination.droppableId === "1" ? "not started" :
@@ -114,7 +110,6 @@ const Kanban = () => {
 
     newDestinationList.splice(destination.index, 0, movedTask);
 
-    // Update the state based on the column
     if (source.droppableId === "1") setNotStartedTodos(newSourceList);
     else if (source.droppableId === "2") setStartedTodos(newSourceList);
     else setCompletedTodos(newSourceList);
